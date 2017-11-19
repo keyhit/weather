@@ -1,0 +1,30 @@
+.container
+  .row
+    .col
+      = bootstrap_form_for :forecast, url: forecasts_path, method: :post, remote: true do |f|
+        .row
+          .col= f.text_field :city, :placeholder => "Input city name", hide_label: true, required: true
+          .col= f.submit "Search weather", :class => "btn btn-outline-success", :value => "Search weather"
+= flash[:error]
+.container
+  .row
+    .col
+      %table.table.table-striped
+        %thead
+          %tr
+            %th{scope: "col"} Id
+            %th{scope: "col"} City
+            %th{scope: "col"} Temperature-min(C)
+            %th{scope: "col"} Temperature-max(C)
+            %th{scope: "col"} Precipitation
+            %th{scope: "col"} Source
+        %tbody
+          - forecasts.each do |forecast|
+            %tr
+              %th{scope: "row"}= forecast.id
+              %td= forecast.city
+              %td= forecast.temp_min
+              %td= forecast.temp_max
+              %td= forecast.precipitation
+              %td= forecast.source
+

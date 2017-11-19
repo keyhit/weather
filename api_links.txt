@@ -1,0 +1,5 @@
+ get city by id 
+ http://dataservice.accuweather.com/forecasts/v1/daily/1day/1-321985_1_AL?apikey=NaxQP42hOVhAZQY5LojWJlh8xmiHiHUa&details=true
+
+ get city by name 
+ http://dataservice.accuweather.com/locations/v1/cities/search?apikey=NaxQP42hOVhAZQY5LojWJlh8xmiHiHUa&q=Cherkassy
