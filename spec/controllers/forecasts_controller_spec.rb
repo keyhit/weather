@@ -18,7 +18,7 @@ RSpec.describe ForecastsController do
 
       it 'test' do
         cookies[:user_id] = user.id
-        get :index 
+        get :index
 
         expect(response.status).to be(200)
         expect(response).to render_template(:index)
@@ -28,27 +28,33 @@ RSpec.describe ForecastsController do
   end
 
   describe 'POST #create' do
-    let(:weather_data) { {
-      temp_min: -1,
-      temp_max: 10,
-      precipitation: 50,
-      source: "accuweather.com",
-      city: "Cherkassy"
+    let(:accu_weather_data) { {
+      accuweather_temp_min: -1,
+      accuweather_temp_max: 3,
+      accuweather_precipitation: 10,
     } }
 
+    let(:darksky_weather_data) { { 
+      darksky_temp_min: -1,
+      darksky_temp_max: 2,
+      darksky_precipitation: 10
+     } }
     context 'recording weather data' do
       it 'should create new record' do
-        allow(AccuweatherService).to receive(:weather).and_return(weather_data)
+        allow(AccuweatherService).to receive(:weather).and_return(accu_weather_data)
+        allow(DarkskyService).to receive(:weather).and_return(darksky_weather_data)
         post :create, params: { forecast: { city: 'Cherkassy' } }, xhr: true
 
         forecast = Forecast.first
         expect(response.status).to be(200)
         expect(Forecast.count).to be(1)
-        expect(forecast.temp_min).to be(-1)
-        expect(forecast.temp_max).to be(10)
-        expect(forecast.precipitation).to eq("50")
-        expect(forecast.source).to eq("accuweather.com")
-        expect(forecast.city).to eq("Cherkassy")
+        expect(forecast.accuweather_temp_min).to be(-1)
+        expect(forecast.accuweather_temp_max).to be(3)
+        expect(forecast.accuweather_precipitation).to be(10)
+        expect(forecast.darksky_temp_min).to be(-1)
+        expect(forecast.darksky_temp_max).to be(2)
+        expect(forecast.darksky_precipitation).to be(10)
+        expect(forecast.city).to eq('Cherkassy')
       end
     end
 
@@ -60,6 +66,17 @@ RSpec.describe ForecastsController do
         expect(response.status).to be(200)
         expect(Forecast.count).to be(0)
         expect(flash[:error]).to eq('Service accuweather.com currently unavailable!')
+      end
+    end
+
+    context 'when Darksky is down' do
+      it 'should show error' do
+        allow(DarkskyService).to receive(:weather). and_raise(DarkskyService::ServiceError)
+      post :create, params: { forecast: { city: 'Cherkassy' } }, xhr: true
+
+        expect(response.status).to be(200)
+        expect(Forecast.count).to be(0)
+        expect(flash[:error]).to eq('Service api.darksky.net currently unavailable!')
       end
     end
   end

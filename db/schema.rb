@@ -16,14 +16,16 @@ ActiveRecord::Schema.define(version: 20171118161050) do
   enable_extension "plpgsql"
 
   create_table "forecasts", force: :cascade do |t|
-    t.integer  "temp_min"
-    t.integer  "temp_max"
-    t.string   "precipitation"
+    t.integer  "accuweather_temp_min"
+    t.integer  "accuweather_temp_max"
+    t.integer  "accuweather_precipitation"
+    t.integer  "darksky_temp_min"
+    t.integer  "darksky_temp_max"
+    t.integer  "darksky_precipitation"
     t.string   "city"
-    t.string   "source"
     t.integer  "user_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.index ["user_id"], name: "index_forecasts_on_user_id", using: :btree
   end
 

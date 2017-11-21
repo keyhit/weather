@@ -1,30 +1,36 @@
 .container
   .row
     .col
-      = bootstrap_form_for :forecast, url: forecasts_path, method: :post, remote: true do |f|
+      = bootstrap_form_for :forecast, url: forecasts_path, method: :post, remote: true, data: { disable: true } do |f|
         .row
-          .col= f.text_field :city, :placeholder => "Input city name", hide_label: true, required: true
-          .col= f.submit "Search weather", :class => "btn btn-outline-success", :value => "Search weather"
+          .col= f.text_field :city, placeholder: 'Input city name', hide_label: true, required: true
+          .col= f.submit "Search weather", class: 'btn btn-outline-success', value: 'Search weather', data: { disable: true }
 = flash[:error]
 .container
   .row
     .col
-      %table.table.table-striped
+      %table.table.table-bordered
         %thead
           %tr
-            %th{scope: "col"} Id
-            %th{scope: "col"} City
-            %th{scope: "col"} Temperature-min(C)
-            %th{scope: "col"} Temperature-max(C)
-            %th{scope: "col"} Precipitation
-            %th{scope: "col"} Source
+            %th{scope: "col", rowspan: 2} Result ids
+            %th{scope: "col", rowspan: 2} Locality
+            %th{scope: "col", colspan: 3}= link_to AccuweatherService::SERVICE_NAME, 'https://www.accuweather.com/en/ua/ukraine-weather', target: "_blank"
+            %th{scope: "col", colspan: 3}= link_to DarkskyService::SERVICE_NAME, 'https://darksky.net/dev', target: "_blank"
+          %tr
+            %th{scope: "col"} Temperature-min(c)
+            %th{scope: "col"} Temperature-max(c)
+            %th{scope: "col"} Precipitation(%)
+            %th{scope: "col"} Temperature-min(c)
+            %th{scope: "col"} Temperature-max(c)
+            %th{scope: "col"} Precipitation(%)
         %tbody
           - forecasts.each do |forecast|
             %tr
               %th{scope: "row"}= forecast.id
               %td= forecast.city
-              %td= forecast.temp_min
-              %td= forecast.temp_max
-              %td= forecast.precipitation
-              %td= forecast.source
-
+              %td= forecast.accuweather_temp_min
+              %td= forecast.accuweather_temp_max
+              %td= forecast.accuweather_precipitation
+              %td= forecast.darksky_temp_min
+              %td= forecast.darksky_temp_max
+              %td= forecast.darksky_precipitation
